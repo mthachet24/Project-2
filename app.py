@@ -29,7 +29,7 @@ Merged_publisher = Base.classes.merged_publisher
 # Flask Setup
 #################################################
 app = Flask(__name__)
-
+db = SQLAlchemy(app)
 #################################################
 # Flask Routes
 #################################################
