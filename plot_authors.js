@@ -1,39 +1,105 @@
 // author plots.js
 function getAuthors(data){
-    authorList = []
-    authorBookCount = []
+    console.log("getAuthors", data);
+    var authorBubbles = [];
     for (var a = 0; a <data.length; a ++){
-        authorList.push(data[a].author)
-        authorBookCount.push(data[a].book_count)
-        
-    }
+        if(data[a].book_count > 2) {
+            authorBubbles.push({
+                "name": data[a].author,
+                "value": data[a].book_count
+            });
+    
+        }
+    };
+
     //console.log(authorList)
+    return authorBubbles;
 }; 
- 
+
+function getUnits(data){
+    console.log("getUnits", data);
+    var unitsBubbles = [];
+    for (var u = 0; u <data.length; u ++){
+        if(data[u].book_count > 2) {
+            unitsBubbles.push({
+                "name": data[u].author,
+                "value": data[u].units_sold
+            });
+    
+        }
+    };
+
+    //console.log(authorList)
+    return unitsBubbles;
+}; 
+
 function buildsetCharts(data){
-     d3.json("authors.json").then(function(data){
+     d3.json("author.json").then(function(data){
 
-        authorsdata = getAuthors(data);
+            var authorsdata = getAuthors(data);
+            console.log(authorsdata);
 
-         Highcharts.chart('bubble container', {
-             chart: {
-                 type: 'packedbubble',
-             },
-             title: {
-                 text: 'Number of Books Published by Author'
-             },
-             series: [{
-                 data: [{
-                     value:authorBookCount,
-                     name: authorList,
-                  }]
+            Highcharts.chart('bubblechart', 
+                {
+                    chart: {
+                        type: 'packedbubble',
+                        height: '50%',
+                    },
+                    plotOptions: {
+                        packedbubble: {
+                            minSize: 15,
+                            maxSize: 200
+                        }
+                    },
+                    title: {
+                        text: 'Number of Books Published by Author (2+ Books)'
+                    },
+                    tooltip: {
+                        useHTML: true,
+                        pointFormat: '<b>{point.name}:</b> {point.y}</sub>'
+                    },
+                    SplotOptions: {
+                        packedbubble: {
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.name}',
+                                style: {
+                                    color: 'black',
+                                    textOutline: 'none',
+                                    fontWeight: 'normal'
+                                }
+                            },
+                            minPointSize: 5
+                        }
+                    },
+                    series: [
+                        {
+                            name: "Authors",
+                            data: authorsdata,
+                        }
+                    ]
+                }
+            )
+            
+                
+            }
+        )
+
+};
 
 
-
-     }]
-})
-})};
 // function buildchangablechart(Decade){
+// //     values = [1,65,8,98,689,12,33,2,3,789];
+// // var topValues = values.sort((a,b) => b-a).slice(0,5);
+// // console.log(topValues); // [789,689,98,65,33]
+//     d3.json("books.json").then(function(data){
+//     var filtered_data = 
+
+    
+//     console.log(filtered_data)
+//     var units_sold = filtered_data.units_sold
+//     console.log(units_sold)
+
 //     //put code to get variables here
 //     // avg rating top authors (top author by units sold)
 
@@ -54,17 +120,30 @@ function buildsetCharts(data){
 
 //       Plotly.newPlot('Author_bar', auth_bar_data, auth_bar_layout);
 
-// }
 
 function init(){
-    var dropdown = d3.select("#selDataset");
-    d3.json("books.json").then(function(data){
+    d3.json("author.json").then(function(authordata){
+        buildsetCharts(authordata);
+        // var authorsdata = getAuthors(authordata)
+
+        // console.log(authorList)
+        // console.log(authorBookCount)
+        // buildsetCharts(authorsdata)
+
+
+    });
+    // var dropdown = d3.select("#selDataset");
+    // d3.json("books.json").then(function(data){
          
-         var decades = Object.keys(data)
-         decades.forEach((decade) =>{
-            dropdown.append("option")
-            .text(decade)
-        })})
+    //      var decades = Object.keys(data)
+    //      decades.forEach((decade) =>{
+    //         dropdown.append("option")
+    //         .text(decade)
+    //         .property("value", decade);
+    //     const decadeOne = decades[0]
+    //     buildchangablechart(decadeOne)
+    //     });
+    //     })}
      //     sampleName.forEach((sample)=>{
      //         dropdown.append("option")        
      //         .text(sample)        
@@ -77,18 +156,8 @@ function init(){
     
     //_________________________________________________________
     //wont stay here this is to test that the function works
-         d3.json("author.json").then(function(authordata){
-            buildsetCharts(authordata);
-        // var authorsdata = getAuthors(authordata)
 
-        // console.log(authorList)
-        // console.log(authorBookCount)
-        // buildsetCharts(authorsdata)
-
-
-    })
-    //_________________________________________________________
-     };
+    //________________________________________________________;
 // }
 
 // function optionChanged(newSample) {
@@ -110,5 +179,5 @@ function init(){
 //     //     PANEL.append("h6").text(`${key.toUpperCase()}: ${value}`);    
 //     //     });
 //     //   });  
-//     }
+     }
 init();
